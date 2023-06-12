@@ -3,9 +3,10 @@
 </p>
 <p align="center"> English | <a href="./README_zh.md">简体中文</a></p>
 
-:WIP> 在unocss或tailwind中,你可能会遇到这样的问题我粘贴了浏览器中的rgba(100, 200, 300),然后再用unocss或者tailwind的写法,text-[rgba(100,200,300)],然后就需要很麻烦的删除中间的空格,这个插件就是为了偷懒,在你保存时自动处理
+:WIP> In unocss or tailwind, you may encounter such a problem. I pasted the rgba(100, 200, 300, .3) in the browser, and then used unocss or tailwind, text-[rgba(100,200,300,.3)], and then it is very troublesome to delete the spaces in the middle. This plugin is for laziness, and it will be automatically processed when you save, including some global presets such as flex-center will be automatically processed into justify-center items- Center and so on support configuration
 
-## 目前处理类型
+
+## Current processing type
 - calc
 - rgb[a]
 - px|rem|em|%|vw|vh
