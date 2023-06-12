@@ -1,5 +1,5 @@
 import fsp from 'node:fs/promises'
-import { addEventListener, createBottomBar, registerCommand } from '@vscode-use/utils'
+import { addEventListener, createBottomBar, getConfiguration, registerCommand } from '@vscode-use/utils'
 import * as vscode from 'vscode'
 
 // todo: 在底部栏增加一个开关来控制是否要启动此插件进行自动处理
@@ -14,6 +14,9 @@ const rules = [
   ['text-hidden', 'whitespace-nowrap overflow-hidden text-eclipse'],
 ]
 export function activate(context: vscode.ExtensionContext) {
+  const { presets = [] } = getConfiguration('uno-magic')
+  if (presets.length)
+    rules.push(...presets)
   let isOpen = true
   context.subscriptions.push(addEventListener('text-save', (e) => {
     if (!isOpen)
