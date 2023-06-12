@@ -1,20 +1,20 @@
 {
   "publisher": "simonhe",
-  "name": "vscode-uno-save",
-  "displayName": "vscode-uno-save",
+  "name": "vscode-uno-magic",
+  "displayName": "vscode-uno-magic",
   "version": "0.0.0",
   "packageManager": "pnpm@8.1.1",
-  "description": "vscode-uno-save",
+  "description": "vscode-uno-magic",
   "author": "Simon He <https://github.com/Simon-He95>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/Simon-He95",
-  "homepage": "https://github.com/Simon-He95/vscode-uno-save#readme",
+  "homepage": "https://github.com/Simon-He95/vscode-uno-magic#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Simon-He95/vscode-uno-save"
+    "url": "https://github.com/Simon-He95/vscode-uno-magic"
   },
   "bugs": {
-    "url": "https://github.com/Simon-He95/vscode-uno-save/issues"
+    "url": "https://github.com/Simon-He95/vscode-uno-magic/issues"
   },
   "sponsor": {
     "url": "https://github.com/Simon-He95/sponsor"
@@ -48,6 +48,7 @@
     "@antfu/eslint-config": "^0.38.4",
     "@types/node": "^18.15.11",
     "@types/vscode": "^1.77.0",
+    "@vscode-use/utils": "^0.0.8",
     "bumpp": "^9.1.0",
     "eslint": "^8.37.0",
     "esno": "^0.16.3",

@@ -5,6 +5,10 @@
 
 :WIP> 在unocss或tailwind中,你可能会遇到这样的问题我粘贴了浏览器中的rgba(100, 200, 300),然后再用unocss或者tailwind的写法,text-[rgba(100, 200, 300)],然后就需要很麻烦的删除中间的空格,这个插件就是为了偷懒,在你保存时自动处理
 
+## 目前处理类型
+- calc
+- rgb[a]
+
 ## :coffee:
 
 [buy me a cup of coffee](https://github.com/Simon-He95/sponsor)
