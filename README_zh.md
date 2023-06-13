@@ -13,6 +13,7 @@
 - px|rem|em|%|vw|vh
 - #ffffff
 - simple preset
+- w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left
 
 ## :coffee:
 

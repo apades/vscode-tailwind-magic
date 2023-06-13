@@ -4,7 +4,13 @@ import * as vscode from 'vscode'
 
 // todo: 在底部栏增加一个开关来控制是否要启动此插件进行自动处理
 const rules = [
-  ['lh-', 'leading-'],
+  [/(w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left)([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/, (_: string, v: string, v1 = '', v2 = '') => {
+    if (v === 'lh')
+      v = 'leading'
+    return v2.trim() === ''
+      ? `${v}-${v1}`
+      : `${v}-[${v1}${v2}]`
+  }],
   [/-\[?\s*(rgba?\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
@@ -12,6 +18,8 @@ const rules = [
   ['flex-center', 'justify-center items-center'],
   [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
   [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
+  [/^(?:x-center)|([\s])x-center/, (_: string, v = '') => `${v}justify-center`],
+  [/^(?:y-center)|([\s])y-center/, (_: string, v = '') => `${v}items-center`],
   [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
   [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
 ]
