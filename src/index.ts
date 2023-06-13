@@ -8,7 +8,7 @@ const rules = [
   [/-\[?\s*(rgba?\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
-  [/-([0-9]+((px)|(vw)|(vh)|(rem)|(em)|%))/g, (_: string, v: string) => `-[${v}]`],
+  [/-([0-9]+(?:px)|(?:vw)|(?:vh)|(?:rem)|(?:em)|(?:%))([\s"])/g, (_: string, v: string, v1 = '') => `-[${v}]${v1}`],
   ['flex-center', 'justify-center items-center'],
   [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
   [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
