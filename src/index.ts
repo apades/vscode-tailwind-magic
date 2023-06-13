@@ -9,11 +9,11 @@ const rules = [
   [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
   [/-([0-9]+((px)|(vw)|(vh)|(rem)|(em)|%))/g, (_: string, v: string) => `-[${v}]`],
-  ['justify-center items-center', 'justify-center items-center'],
-  [/^x-hidden/, 'overflow-x-hidden'],
-  [/^y-hidden/, 'overflow-y-hidden'],
-  [/^hidden/, 'overflow-hidden'],
-  [/^eclipse/, 'whitespace-nowrap overflow-hidden text-eclipse'],
+  ['flex-center', 'justify-center items-center'],
+  [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
+  [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
+  [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
+  [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-eclipse`],
 ]
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
