@@ -14,12 +14,16 @@ const fontMap: any = {
   900: 'black',
 }
 
+const customMap: any = {
+  'b': 'border',
+  'border-rd': 'rounded',
+  'lh': 'leading',
+}
+
 const rules = [
-  [/(w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left|border-rd)([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/, (_: string, v: string, v1 = '', v2 = '') => {
-    if (v === 'border-rd')
-      v = 'rounded'
-    if (v === 'lh')
-      v = 'leading'
+  [/(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left|border-rd)-?([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/g, (_: string, v: string, v1 = '', v2 = '') => {
+    if (v in customMap)
+      v = customMap[v]
 
     return v2.trim() === ''
       ? `${v}-${v1}${v2}`
