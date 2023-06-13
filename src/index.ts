@@ -13,7 +13,7 @@ const rules = [
   [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
   [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
   [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
-  [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-eclipse`],
+  [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
 ]
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
