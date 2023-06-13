@@ -2,15 +2,31 @@ import fs from 'node:fs'
 import { addEventListener, createBottomBar, getConfiguration, registerCommand } from '@vscode-use/utils'
 import * as vscode from 'vscode'
 
-// todo: 在底部栏增加一个开关来控制是否要启动此插件进行自动处理
+const fontMap: any = {
+  100: 'thin',
+  200: 'extralight',
+  300: 'light',
+  400: 'normal',
+  500: 'medium',
+  600: 'semibold',
+  700: 'bold',
+  800: 'extrabold',
+  900: 'black',
+}
+
 const rules = [
-  [/(w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left)([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/, (_: string, v: string, v1 = '', v2 = '') => {
+  [/(w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left|border-rd)([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/, (_: string, v: string, v1 = '', v2 = '') => {
+    if (v === 'border-rd')
+      v = 'rounded'
     if (v === 'lh')
       v = 'leading'
+
     return v2.trim() === ''
-      ? `${v}-${v1}`
+      ? `${v}-${v1}${v2}`
       : `${v}-[${v1}${v2}]`
   }],
+  [/^(?:border-box)|([\s])border-box/, (_: string, v = '') => `${v}box-border`],
+  [/^(?:content-box)|([\s])content-box/, (_: string, v = '') => `${v}box-content`],
   [/-\[?\s*(rgba?\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
@@ -18,10 +34,12 @@ const rules = [
   ['flex-center', 'justify-center items-center'],
   [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
   [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
-  [/^(?:x-center)|([\s])x-center/, (_: string, v = '') => `${v}justify-center`],
-  [/^(?:y-center)|([\s])y-center/, (_: string, v = '') => `${v}items-center`],
+  [/^(?:justify-center)|([\s])justify-center/, (_: string, v = '') => `${v}justify-center`],
+  [/^(?:align-center)|([\s])align-center/, (_: string, v = '') => `${v}items-center`],
   [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
   [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
+  [/font-?(100|200|300|400|500|600|700|800|900)/, (_: string, v: string) => `font-${fontMap[v]}`],
+  ['pointer-none', 'pointer-events: none'],
 ]
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
@@ -44,9 +62,9 @@ export function activate(context: vscode.ExtensionContext) {
     position: 'left',
     offset: 500,
   })
-  const activeTextEditor = vscode.window.activeTextEditor?.document.uri.path
+  const activeTextEditorUri = vscode.window.activeTextEditor?.document.uri.path
 
-  if (activeTextEditor && prefix.includes(activeTextEditor.split('.').slice(-1)[0]))
+  if (activeTextEditorUri && prefix.includes(activeTextEditorUri.split('.').slice(-1)[0]))
     statusBarItem.show()
 
   registerCommand('unomagic.changeStatus', () => {
@@ -56,18 +74,38 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(addEventListener('text-save', (e) => {
     const url = vscode.window.activeTextEditor!.document.uri.path
-    if (!isOpen || !isTailwind)
+    const activeTextEditor = vscode.window.activeTextEditor
+    if (!isOpen || !isTailwind || !activeTextEditor)
       return
+    const beforeActivePosition = activeTextEditor.selection.active
     // 对文档保存后的内容进行处理
     const text = e.getText()
+
     const newText = rules.reduce((result, cur) => {
       const [reg, callback] = cur as [string | RegExp, string ]
       return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string) =>
       `class${name}="${value.replace(reg, callback)}"`,
       )
     }, text)
-    if (newText !== text)
-      fs.promises.writeFile(url, newText, 'utf-8')
+    if (newText !== text) {
+      // activeTextEditor.selection = new vscode.Selection(beforeActivePosition, beforeActivePosition)
+      fs.promises.writeFile(url, newText, 'utf-8').then(() => {
+        const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
+        const classMatch = lineText.match(/((class)|(className))="[^"]*"/)
+        if (!classMatch)
+          return
+
+        const index = classMatch.index ?? 0
+        const offset = classMatch[0].length + index
+        const newCursorPosition = new vscode.Position(
+          beforeActivePosition.line,
+          offset,
+        )
+        setTimeout(() => {
+          activeTextEditor.selection = new vscode.Selection(newCursorPosition, newCursorPosition)
+        }, 100)
+      })
+    }
   }))
 
   context.subscriptions.push(addEventListener('activeText-change', () =>
