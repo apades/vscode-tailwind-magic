@@ -4,25 +4,26 @@ import * as vscode from 'vscode'
 
 // todo: 在底部栏增加一个开关来控制是否要启动此插件进行自动处理
 const rules = [
-  [/-\[\s*(rgb[a]\([^\)]*\))\s*\]/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
-  [/-\[\s*(calc\([^\)]*\))\s*\]/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
+  [/-\[?\s*(rgba?\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
+  [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
   [/-([0-9]+((px)|(vw)|(vh)|(rem)|(em)|%))/g, (_: string, v: string) => `-[${v}]`],
-  ['flex-center', 'justify-center items-center'],
-  ['x-hidden', 'overflow-x-hidden'],
-  ['y-hidden', 'overflow-y-hidden'],
-  ['text-hidden', 'whitespace-nowrap overflow-hidden text-eclipse'],
+  ['justify-center items-center', 'justify-center items-center'],
+  ['overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-x-hidden', 'overflow-x-hidden'],
+  ['overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-overflow-y-hidden', 'overflow-y-hidden'],
+  ['whitespace-nowrap overflow-hidden text-eclipse', 'whitespace-nowrap overflow-hidden text-eclipse'],
 ]
 export function activate(context: vscode.ExtensionContext) {
   const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('uno-magic')
   if (presets.length)
     rules.push(...presets)
   let isOpen = true
+  // 如果在class或者className中才处理成-[]
   const statusBarItem = createBottomBar({
     text: 'uno-magic off 😞',
     command: {
       title: 'uno-magic',
-      command: 'extension.changeStatus',
+      command: 'unomagic.changeStatus',
     },
     position: 'left',
     offset: 500,
@@ -32,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
   if (activeTextEditor && prefix.includes(activeTextEditor.split('.').slice(-1)[0]))
     statusBarItem.show()
 
-  registerCommand('extension.changeStatus', () => {
+  registerCommand('unomagic.changeStatus', () => {
     isOpen = !isOpen
     statusBarItem.text = `uno-magic ${isOpen ? 'off 😞' : 'on 🤩'}`
   })
@@ -44,8 +45,10 @@ export function activate(context: vscode.ExtensionContext) {
     // 对文档保存后的内容进行处理
     const text = e.getText()
     const newText = rules.reduce((result, cur) => {
-      const [reg, callback] = cur
-      return result.replace(reg, callback)
+      const [reg, callback] = cur as [string | RegExp, string ]
+      return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string) =>
+      `class${name}="${value.replace(reg, callback)}"`,
+      )
     }, text)
     if (newText !== text)
       fsp.writeFile(url, newText, 'utf-8')

@@ -1,20 +1,20 @@
 {
   "publisher": "simonhe",
-  "name": "vscode-uno-magic",
-  "displayName": "vscode-uno-magic",
+  "name": "vscode-tailwind-magic",
+  "displayName": "vscode-tailwind-magic",
   "version": "0.0.4",
   "packageManager": "pnpm@8.1.1",
-  "description": "vscode-uno-magic",
+  "description": "vscode-tailwind-magic",
   "author": "Simon He <https://github.com/Simon-He95>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/Simon-He95",
-  "homepage": "https://github.com/Simon-He95/vscode-uno-magic#readme",
+  "homepage": "https://github.com/Simon-He95/vscode-tailwind-magic#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Simon-He95/vscode-uno-magic"
+    "url": "https://github.com/Simon-He95/vscode-tailwind-magic"
   },
   "bugs": {
-    "url": "https://github.com/Simon-He95/vscode-uno-magic/issues"
+    "url": "https://github.com/Simon-He95/vscode-tailwind-magic/issues"
   },
   "sponsor": {
     "url": "https://github.com/Simon-He95/sponsor"
