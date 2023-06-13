@@ -14,23 +14,10 @@ const rules = [
   ['text-hidden', 'whitespace-nowrap overflow-hidden text-eclipse'],
 ]
 export function activate(context: vscode.ExtensionContext) {
-  const { presets = [] } = getConfiguration('uno-magic')
+  const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('uno-magic')
   if (presets.length)
     rules.push(...presets)
   let isOpen = true
-  context.subscriptions.push(addEventListener('text-save', (e) => {
-    if (!isOpen)
-      return
-    const url = vscode.window.activeTextEditor!.document.uri.path
-    // 对文档保存后的内容进行处理
-    const text = e.getText()
-    const newText = rules.reduce((result, cur) => {
-      const [reg, callback] = cur
-      return result.replace(reg, callback)
-    }, text)
-    if (newText !== text)
-      fsp.writeFile(url, newText, 'utf-8')
-  }))
   const statusBarItem = createBottomBar({
     text: 'uno-magic off 😞',
     command: {
@@ -40,11 +27,41 @@ export function activate(context: vscode.ExtensionContext) {
     position: 'left',
     offset: 500,
   })
-  statusBarItem.show()
+  const activeTextEditor = vscode.window.activeTextEditor?.document.uri.path
+
+  if (activeTextEditor && prefix.includes(activeTextEditor.split('.').slice(-1)[0]))
+    statusBarItem.show()
+
   registerCommand('extension.changeStatus', () => {
     isOpen = !isOpen
     statusBarItem.text = `uno-magic ${isOpen ? 'off 😞' : 'on 🤩'}`
   })
+
+  context.subscriptions.push(addEventListener('text-save', (e) => {
+    const url = vscode.window.activeTextEditor!.document.uri.path
+    if (!isOpen)
+      return
+    // 对文档保存后的内容进行处理
+    const text = e.getText()
+    const newText = rules.reduce((result, cur) => {
+      const [reg, callback] = cur
+      return result.replace(reg, callback)
+    }, text)
+    if (newText !== text)
+      fsp.writeFile(url, newText, 'utf-8')
+  }))
+
+  context.subscriptions.push(addEventListener('activeText-change', () =>
+    setTimeout(() => {
+      const url = vscode.window.activeTextEditor?.document.uri.path
+      if (!url)
+        return
+      if (!prefix.includes(url.split('.').slice(-1)[0]))
+        statusBarItem.hide()
+      else
+        statusBarItem.show()
+    }),
+  ))
 }
 
 export function deactivate() {
