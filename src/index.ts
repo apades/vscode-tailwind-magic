@@ -36,15 +36,16 @@ const rules = [
   [/-\[?\s*(calc\([^\)]*\))\s*\]?/g, (_: string, v: string) => `-[${v.replace(/\s*/g, '')}]`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
   [/-([0-9]+(?:px)|(?:vw)|(?:vh)|(?:rem)|(?:em)|(?:%))([\s"])/g, (_: string, v: string, v1 = '') => `-[${v}]${v1}`],
-  ['flex-center', 'justify-center items-center'],
   [/^(?:x-hidden)|([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
   [/^(?:y-hidden)|([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
   [/^(?:justify-center)|([\s])justify-center/, (_: string, v = '') => `${v}justify-center`],
   [/^(?:align-center)|([\s])align-center/, (_: string, v = '') => `${v}items-center`],
   [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
   [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
-  [/(["\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => `${prefix}font-${fontMap[v]}`],
-  ['pointer-none', 'pointer-events: none'],
+  [/(["\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => ` ${prefix}font-${fontMap[v]}`],
+  [/^(?:pointer-none)|([\s])pointer-none/, (_: string, v = '') => `${v}pointer-events-none`],
+  [/^(?:pointer)|([\s])pointer/, (_: string, v = '') => `${v}cursor-pointer`],
+  [/^(?:flex-center)|([\s])flex-center/, (_: string, v = '') => `${v}justify-center items-center`],
 ]
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
