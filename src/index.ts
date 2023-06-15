@@ -67,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
     position: 'left',
     offset: 500,
   })
-  const activeTextEditorUri = vscode.window.activeTextEditor?.document.uri.path
+  const activeTextEditorUri = vscode.window.activeTextEditor?.document?.uri?.path
 
   if (activeTextEditorUri && prefix.includes(activeTextEditorUri.split('.').slice(-1)[0]))
     statusBarItem.show()
@@ -95,25 +95,25 @@ export function activate(context: vscode.ExtensionContext) {
       },
       )
     }, text)
-    if (newText !== text) {
-      // activeTextEditor.selection = new vscode.Selection(beforeActivePosition, beforeActivePosition)
-      fs.promises.writeFile(url, newText, 'utf-8').then(() => {
-        const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
-        const classMatch = lineText.match(/((class)|(className))="[^"]*"/)
-        if (!classMatch)
-          return
+    if (newText === text)
+      return
+    // activeTextEditor.selection = new vscode.Selection(beforeActivePosition, beforeActivePosition)
+    fs.promises.writeFile(url, newText, 'utf-8').then(() => {
+      const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
+      const classMatch = lineText.match(/((class)|(className))="[^"]*"/)
+      if (!classMatch)
+        return
 
-        const index = classMatch.index ?? 0
-        const offset = classMatch[0].length + index
-        const newCursorPosition = new vscode.Position(
-          beforeActivePosition.line,
-          offset,
-        )
-        setTimeout(() => {
-          activeTextEditor.selection = new vscode.Selection(newCursorPosition, newCursorPosition)
-        }, 100)
-      })
-    }
+      const index = classMatch.index ?? 0
+      const offset = classMatch[0].length + index
+      const newCursorPosition = new vscode.Position(
+        beforeActivePosition.line,
+        offset,
+      )
+      setTimeout(() => {
+        activeTextEditor.selection = new vscode.Selection(newCursorPosition, newCursorPosition)
+      }, 100)
+    })
   }))
 
   context.subscriptions.push(addEventListener('activeText-change', () =>
