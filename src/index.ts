@@ -16,18 +16,19 @@ const fontMap: any = {
 
 const customMap: any = {
   'b': 'border',
+  'bb': 'border-b',
   'border-rd': 'rounded',
   'lh': 'leading',
 }
 
 const rules = [
-  [/(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left|border-rd)-?([0-9]+)(px|rem|em|\%|vw|vh|\s|$)/g, (_: string, v: string, v1 = '', v2 = '') => {
+  [/\s(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left|border-rd)-?([0-9]+)(px|rem|em|\%|vw|vh||$)/g, (_: string, v: string, v1 = '', v2 = '') => {
     if (v in customMap)
       v = customMap[v]
 
     return v2.trim() === ''
-      ? `${v}-${v1}${v2}`
-      : `${v}-[${v1}${v2}]`
+      ? ` ${v}-${v1}${v2}`
+      : ` ${v}-[${v1}${v2}]`
   }],
   [/^(?:border-box)|([\s])border-box/, (_: string, v = '') => `${v}box-border`],
   [/^(?:content-box)|([\s])content-box/, (_: string, v = '') => `${v}box-content`],
@@ -42,7 +43,7 @@ const rules = [
   [/^(?:align-center)|([\s])align-center/, (_: string, v = '') => `${v}items-center`],
   [/^(?:hidden)|([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
   [/^(?:eclipse)|([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
-  [/font-?(100|200|300|400|500|600|700|800|900)/, (_: string, v: string) => `font-${fontMap[v]}`],
+  [/(["\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => `${prefix}font-${fontMap[v]}`],
   ['pointer-none', 'pointer-events: none'],
 ]
 export function activate(context: vscode.ExtensionContext) {
@@ -87,8 +88,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     const newText = rules.reduce((result, cur) => {
       const [reg, callback] = cur as [string | RegExp, string ]
-      return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string) =>
-      `class${name}="${value.replace(reg, callback)}"`,
+      return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string) => {
+        const v = ` ${value}`
+        const newClass = v.replace(reg, callback).slice(1)
+        return `class${name}="${newClass}"`
+      },
       )
     }, text)
     if (newText !== text) {
