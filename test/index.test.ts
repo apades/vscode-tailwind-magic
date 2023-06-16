@@ -29,4 +29,7 @@ describe('should', () => {
   it('exported', () => {
     expect(transform('class="duration0"')).toMatchInlineSnapshot('"class=\\"duration-0\\""')
   })
+  it('exported', () => {
+    expect(transform('class="border1"')).toMatchInlineSnapshot('"class=\\"border\\""')
+  })
 })
