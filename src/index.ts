@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import { addEventListener, createBottomBar, getConfiguration, registerCommand } from '@vscode-use/utils'
 import * as vscode from 'vscode'
+import {resolve} from 'path'
 
 const fontMap: any = {
   100: 'thin',
@@ -79,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
   })
 
   context.subscriptions.push(addEventListener('text-save', (e) => {
-    const url = vscode.window.activeTextEditor!.document.uri.path
+    const url = vscode.window.activeTextEditor!.document.uri.fsPath
     const activeTextEditor = vscode.window.activeTextEditor
     if (!isOpen || !isTailwind || !activeTextEditor)
       return
@@ -119,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(addEventListener('activeText-change', () =>
     setTimeout(() => {
-      const url = vscode.window.activeTextEditor?.document.uri.path
+      const url = vscode.window.activeTextEditor?.document.uri.fsPath
       if (!url)
         return
       if (!prefix.includes(url.split('.').slice(-1)[0]))
@@ -135,8 +136,8 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function updateTailwindStatus() {
-    const rootPath = currentFolder.uri.path
-    isTailwind = fs.existsSync(`${rootPath}/tailwind.config.js`) || fs.existsSync(`${rootPath}/tailwind.config.ts`)
+    const rootPath = currentFolder.uri.fsPath
+    isTailwind = fs.existsSync(resolve(rootPath,'./tailwind.config.js')) || fs.existsSync(resolve(rootPath,'./tailwind.config.ts'))
   }
 }
 
