@@ -32,4 +32,7 @@ describe('should', () => {
   it('exported', () => {
     expect(transform('class="border1 bg-[rgba(0,0,0,0.8)]"')).toMatchInlineSnapshot('"class=\\"border bg-[rgba(0,0,0,0.8)]\\""')
   })
+  it('exported', () => {
+    expect(transform('class="z-[99] bg-[rgba(0,0,0,0.8)]   fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"')).toMatchInlineSnapshot('"class=\\"z-[99] bg-[rgba(0,0,0,0.8)]   fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center\\""')
+  })
 })
