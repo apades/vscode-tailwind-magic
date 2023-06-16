@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
   const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('uno-magic')
   let isTailwind = false
-  const currentFolder = (vscode.workspace.workspaceFolders as any)[0]
+  const currentFolder = (vscode.workspace.workspaceFolders as any)?.[0]
   if (currentFolder)
     updateTailwindStatus()
   if (presets.length)
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
   })
 
   context.subscriptions.push(addEventListener('text-save', (e) => {
-    const url = vscode.window.activeTextEditor!.document.uri.path
+    const url = vscode.window.activeTextEditor!.document.uri.fsPath
     const activeTextEditor = vscode.window.activeTextEditor
     if (!isOpen || !isTailwind || !activeTextEditor)
       return
@@ -82,7 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   function updateTailwindStatus() {
-    const rootPath = currentFolder.uri.path
+    const rootPath = currentFolder.uri.fsPath.replace(/\\/g, '/')
     isTailwind = fs.existsSync(`${rootPath}/tailwind.config.js`) || fs.existsSync(`${rootPath}/tailwind.config.ts`)
   }
 }
