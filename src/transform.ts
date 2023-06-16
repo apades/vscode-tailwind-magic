@@ -53,7 +53,7 @@ export const rules: any = [
   }],
   [/([\s])border-box/, (_: string, v = '') => `${v}box-border`],
   [/([\s])content-box/, (_: string, v = '') => `${v}box-content`],
-  [/-\[?\s*(rgba?\([^\)]*\))\s*\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
+  [/-\[?\s*(rgba?\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-\[?\s*(calc\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
   [/-([0-9]+(?:px)|(?:vw)|(?:vh)|(?:rem)|(?:em)|(?:%))([\s"])/g, (_: string, v: string, v1 = '') => `-[${v}]${v1}`],

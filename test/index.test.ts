@@ -3,7 +3,7 @@ import { transform } from '../src/transform'
 
 describe('should', () => {
   it('exported', () => {
-    expect(transform('class="w10 font600 bg-rgba(0,0,0)"')).toMatchInlineSnapshot('"class=\\"w-10 font-semibold bg-[rgba(0,0,0)]16\\""')
+    expect(transform('class="w10 font600 bg-rgba(0,0,0)"')).toMatchInlineSnapshot('"class=\\"w-10 font-semibold bg-[rgba(0,0,0)]\\""')
   })
   it('exported', () => {
     expect(transform('class="max-w10"')).toMatchInlineSnapshot('"class=\\"max-w-10\\""')
@@ -30,6 +30,6 @@ describe('should', () => {
     expect(transform('class="duration0"')).toMatchInlineSnapshot('"class=\\"duration-0\\""')
   })
   it('exported', () => {
-    expect(transform('class="border1"')).toMatchInlineSnapshot('"class=\\"border\\""')
+    expect(transform('class="border1 bg-[rgba(0,0,0,0.8)]"')).toMatchInlineSnapshot('"class=\\"border bg-[rgba(0,0,0,0.8)]\\""')
   })
 })
