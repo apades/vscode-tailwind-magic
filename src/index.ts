@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(addEventListener('activeText-change', () =>
     setTimeout(() => {
-      const url = vscode.window.activeTextEditor?.document.uri.path
+      const url = vscode.window.activeTextEditor?.document.uri.fsPath
       if (!url)
         return
       if (!prefix.includes(url.split('.').slice(-1)[0]))
