@@ -34,7 +34,7 @@ const textMap: any = {
 }
 
 export const rules: any = [
-  [/\s(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|text|top|right|bottom|left|border-rd|border|max-w|max-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)/g, (_: string, v: string, v1 = '', v2 = '') => {
+  [/(\s|hover:|focus:|active:|disabled:|invalid:|checked:|required:|first:|last:|odd:|even:|after:|before:|placeholder:|file:|marker:|selection:|first-line:|first-letter:|backdrop:|md:|sm:|xl:|2xl:|lg:|dark:|ltr:|rtl:|group-hover:|group-focus:|group-active:)(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|text|top|right|bottom|left|border-rd|border|max-w|max-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)/g, (_: string, prefix: string, v: string, v1 = '', v2 = '') => {
     let negative = ''
     if (v1.startsWith('-')) {
       negative = '-'
@@ -43,13 +43,13 @@ export const rules: any = [
     if (v in customMap)
       v = customMap[v]
     if ((v === 'border-b' || v === 'border') && v1 === '1')
-      return ` ${negative}${v}`
+      return `${prefix}${negative}${v}`
     if (v === 'text' && v1 in textMap)
-      return ` ${negative}${v}-${textMap[v1]}${v2}`
+      return `${prefix}${negative}${v}-${textMap[v1]}${v2}`
 
     return v2.trim() === ''
-      ? ` ${negative}${v}-${v1}${v2}`
-      : ` ${negative}${v}-[${v1}${v2}]`
+      ? `${prefix}${negative}${v}-${v1}${v2}`
+      : `${prefix}${negative}${v}-[${v1}${v2}]`
   }],
   [/([\s])border-box/, (_: string, v = '') => `${v}box-border`],
   [/([\s])content-box/, (_: string, v = '') => `${v}box-content`],
