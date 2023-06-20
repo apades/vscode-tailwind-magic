@@ -44,4 +44,19 @@ describe('should', () => {
   it('exported', () => {
     expect(transform('class="dark:md:hover:w10"')).toMatchInlineSnapshot('"class=\\"dark:md:hover:w-10\\""')
   })
+  it('exported', () => {
+    expect(transform('class="!w10"')).toMatchInlineSnapshot('"class=\\"!w-10\\""')
+  })
+  it('exported', () => {
+    expect(transform('class="w10px!"')).toMatchInlineSnapshot('"class=\\"!w-[10px]\\""')
+  })
+  it('exported', () => {
+    expect(transform('class="ml--10px! !w10"')).toMatchInlineSnapshot('"class=\\"!-ml-[10px] !w-10\\""')
+  })
+  it('exported', () => {
+    expect(transform('class="position-center"')).toMatchInlineSnapshot('"class=\\"left-0 right-0 top-0 bottom-0\\""')
+  })
+  it('exported', () => {
+    expect(transform('class="hidden!"')).toMatchInlineSnapshot('"class=\\"!overflow-hidden\\""')
+  })
 })

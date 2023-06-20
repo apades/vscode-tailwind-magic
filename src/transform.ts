@@ -33,8 +33,9 @@ const textMap: any = {
   128: '9xl',
 }
 
+const COMMON_REG = /(!|\s|hover:|focus:|active:|disabled:|invalid:|checked:|required:|first:|last:|odd:|even:|after:|before:|placeholder:|file:|marker:|selection:|first-line:|first-letter:|backdrop:|md:|sm:|xl:|2xl:|lg:|dark:|ltr:|rtl:|group-hover:|group-focus:|group-active:)(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|text|top|right|bottom|left|border-rd|border|max-w|max-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)(!?)/g
 export const rules: any = [
-  [/(\s|hover:|focus:|active:|disabled:|invalid:|checked:|required:|first:|last:|odd:|even:|after:|before:|placeholder:|file:|marker:|selection:|first-line:|first-letter:|backdrop:|md:|sm:|xl:|2xl:|lg:|dark:|ltr:|rtl:|group-hover:|group-focus:|group-active:)(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|text|top|right|bottom|left|border-rd|border|max-w|max-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)/g, (_: string, prefix: string, v: string, v1 = '', v2 = '') => {
+  [COMMON_REG, (_: string, prefix: string, v: string, v1 = '', v2 = '', v3 = '') => {
     let negative = ''
     if (v1.startsWith('-')) {
       negative = '-'
@@ -43,13 +44,13 @@ export const rules: any = [
     if (v in customMap)
       v = customMap[v]
     if ((v === 'border-b' || v === 'border') && v1 === '1')
-      return `${prefix}${negative}${v}`
+      return `${prefix}${v3}${negative}${v}`
     if (v === 'text' && v1 in textMap)
-      return `${prefix}${negative}${v}-${textMap[v1]}${v2}`
+      return `${prefix}${v3}${negative}${v}-${textMap[v1]}${v2}`
 
     return v2.trim() === ''
-      ? `${prefix}${negative}${v}-${v1}${v2}`
-      : `${prefix}${negative}${v}-[${v1}${v2}]`
+      ? `${prefix}${v3}${negative}${v}-${v1}${v2}`
+      : `${prefix}${v3}${negative}${v}-[${v1}${v2}]`
   }],
   [/([\s])border-box/, (_: string, v = '') => `${v}box-border`],
   [/([\s])content-box/, (_: string, v = '') => `${v}box-content`],
@@ -57,16 +58,17 @@ export const rules: any = [
   [/-\[?\s*(calc\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
   [/-([0-9]+(?:px)|(?:vw)|(?:vh)|(?:rem)|(?:em)|(?:%))([\s"])/g, (_: string, v: string, v1 = '') => `-[${v}]${v1}`],
-  [/([\s])x-hidden/, (_: string, v = '') => `${v}overflow-x-hidden`],
-  [/([\s])y-hidden/, (_: string, v = '') => `${v}overflow-y-hidden`],
-  [/([\s])justify-center/, (_: string, v = '') => `${v}justify-center`],
-  [/([\s])align-center/, (_: string, v = '') => `${v}items-center`],
-  [/([\s])hidden/, (_: string, v = '') => `${v}overflow-hidden`],
+  [/([\s!])x-hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-x-hidden`],
+  [/([\s!])y-hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-y-hidden`],
+  [/([\s!])justify-center(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}justify-center`],
+  [/([\s!])align-center(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}items-center`],
+  [/([\s!])hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-hidden`],
   [/([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
-  [/(["\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => `${prefix}font-${fontMap[v]}`],
+  [/([\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => `${prefix}font-${fontMap[v]}`],
   [/([\s])pointer-none/, (_: string, v = '') => `${v}pointer-events-none`],
   [/([\s])pointer/, (_: string, v = '') => `${v}cursor-pointer`],
   [/([\s])flex-center/, (_: string, v = '') => `${v}justify-center items-center`],
+  [/([\s])position-center/, (_: string, v = '') => `${v}left-0 right-0 top-0 bottom-0`],
   [/([\s])dashed/, (_: string, v = '') => `${v}border-dashed`],
   [/([\s])dotted/, (_: string, v = '') => `${v}border-dotted`],
   [/([\s])double/, (_: string, v = '') => `${v}border-double`],
