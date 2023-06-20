@@ -14,6 +14,8 @@
 - #ffffff
 - simple preset
 - w|h|gap|m|mt|mr|mb|ml|p|pt|pr|pb|pl|b|bt|br|bb|bl|lh|top|right|bottom|left
+- w1! -> !w-1
+- w--1 -> -w-1
 
 ## :coffee:
 
