@@ -59,4 +59,7 @@ describe('should', () => {
   it('exported', () => {
     expect(transform('class="hidden!"')).toMatchInlineSnapshot('"class=\\"!overflow-hidden\\""')
   })
+  it('exported', () => {
+    expect(transform('class="text-18px text-1rem"')).toMatchInlineSnapshot('"class=\\"text-lg text-[1rem]\\""')
+  })
 })

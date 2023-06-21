@@ -45,8 +45,9 @@ export const rules: any = [
       v = customMap[v]
     if ((v === 'border-b' || v === 'border') && v1 === '1')
       return `${prefix}${v3}${negative}${v}`
-    if (v === 'text' && v1 in textMap)
-      return `${prefix}${v3}${negative}${v}-${textMap[v1]}${v2}`
+
+    if (v === 'text' && (v2 === 'px' || v2 === '') && v1 in textMap)
+      return `${prefix}${v3}${negative}${v}-${textMap[v1]}`
 
     return v2.trim() === ''
       ? `${prefix}${v3}${negative}${v}-${v1}${v2}`
