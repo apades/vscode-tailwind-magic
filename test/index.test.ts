@@ -62,4 +62,7 @@ describe('should', () => {
   it('exported', () => {
     expect(transform('class="text-18px text-1rem"')).toMatchInlineSnapshot('"class=\\"text-lg text-[1rem]\\""')
   })
+  it('exported', () => {
+    expect(transform('class="bg#fff maxh10px minw10px"')).toMatchInlineSnapshot('"class=\\"bg-[#fff] max-h-[10px] min-w-[10px]\\""')
+  })
 })

@@ -33,8 +33,12 @@ const textMap: any = {
   128: '9xl',
 }
 
-const COMMON_REG = /(!|\s|hover:|focus:|active:|disabled:|invalid:|checked:|required:|first:|last:|odd:|even:|after:|before:|placeholder:|file:|marker:|selection:|first-line:|first-letter:|backdrop:|md:|sm:|xl:|2xl:|lg:|dark:|ltr:|rtl:|group-hover:|group-focus:|group-active:)(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|b|bt|br|bb|bl|lh|text|top|right|bottom|left|border-rd|border|max-w|max-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)(!?)/g
+const COMMON_REG = /(!|\s|hover:|focus:|active:|disabled:|invalid:|checked:|required:|first:|last:|odd:|even:|after:|before:|placeholder:|file:|marker:|selection:|first-line:|first-letter:|backdrop:|md:|sm:|xl:|2xl:|lg:|dark:|ltr:|rtl:|group-hover:|group-focus:|group-active:)(w|h|gap|m|mx|my|mt|mr|mb|ml|p|px|py|pt|pr|pb|pl|bt|br|bb|bl|b|lh|text|top|right|bottom|left|border-rd|border|max-w|min-w|max-h|min-h|translate-x|translate-y|duration|delay|scale-x|scale-y|scale|rotate|skew-x|skew-y|fill|stroke|invert|saturate|grayscale|contrast|brightness|blur|outline)-?(-?[0-9]+)(px|rem|em|\%|vw|vh||$)(!?)/g
 export const rules: any = [
+  ['maxh', 'max-h'],
+  ['minh', 'min-h'],
+  ['maxw', 'max-w'],
+  ['minw', 'min-w'],
   [COMMON_REG, (_: string, prefix: string, v: string, v1 = '', v2 = '', v3 = '') => {
     let negative = ''
     if (v1.startsWith('-')) {
@@ -58,6 +62,8 @@ export const rules: any = [
   [/-\[?\s*(rgba?\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-\[?\s*(calc\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-(\#[^\s\"]+)/g, (_: string, v: string) => `-[${v}]`],
+  [/(bg|text|border)(\#[^\s\"]+)/g, (_: string, v: string, v1: string) => `${v}-[${v1}]`],
+  [/(w|h|max-w|max-h)\[?\s*(calc\([^\)]*\))(\s*)\]?/g, (_: string, v: string, v1 = '') => `-[${v.replace(/\s*/g, '')}]${v1}`],
   [/-([0-9]+(?:px)|(?:vw)|(?:vh)|(?:rem)|(?:em)|(?:%))([\s"])/g, (_: string, v: string, v1 = '') => `-[${v}]${v1}`],
   [/([\s!])x-hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-x-hidden`],
   [/([\s!])y-hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-y-hidden`],
