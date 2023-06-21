@@ -5,7 +5,7 @@ import { rules, transform } from './transform'
 
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
-  const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('uno-magic')
+  const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('tailwind-magic')
   let isTailwind = false
   const currentFolder = (vscode.workspace.workspaceFolders as any)?.[0]
   if (currentFolder)
@@ -15,10 +15,10 @@ export function activate(context: vscode.ExtensionContext) {
   let isOpen = true
   // 如果在class或者className中才处理成-[]
   const statusBarItem = createBottomBar({
-    text: 'uno-magic off 😞',
+    text: 'tailwind-magic off 😞',
     command: {
-      title: 'uno-magic',
-      command: 'unomagic.changeStatus',
+      title: 'tailwind-magic',
+      command: 'tailwindmagic.changeStatus',
     },
     position: 'left',
     offset: 500,
@@ -28,9 +28,9 @@ export function activate(context: vscode.ExtensionContext) {
   if (activeTextEditorUri && prefix.includes(activeTextEditorUri.split('.').slice(-1)[0]))
     statusBarItem.show()
 
-  registerCommand('unomagic.changeStatus', () => {
+  registerCommand('tailwindmagic.changeStatus', () => {
     isOpen = !isOpen
-    statusBarItem.text = `uno-magic ${isOpen ? 'off 😞' : 'on 🤩'}`
+    statusBarItem.text = `tailwind-magic ${isOpen ? 'off 😞' : 'on 🤩'}`
   })
 
   context.subscriptions.push(addEventListener('text-save', (e) => {
