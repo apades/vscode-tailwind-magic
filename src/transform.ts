@@ -69,7 +69,6 @@ export const rules: any = [
   [/([\s!])y-hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-y-hidden`],
   [/([\s!])justify-center(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}justify-center`],
   [/([\s!])align-center(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}items-center`],
-  [/([\s!])hidden(!?)/, (_: string, v = '', v1 = '') => `${v}${v1}overflow-hidden`],
   [/([\s])eclipse/, (_: string, v = '') => `${v}whitespace-nowrap overflow-hidden text-ellipsis`],
   [/([\s])font-?(100|200|300|400|500|600|700|800|900)/, (_: string, prefix: string, v: string) => `${prefix}font-${fontMap[v]}`],
   [/([\s])pointer-none/, (_: string, v = '') => `${v}pointer-events-none`],

@@ -1,7 +1,23 @@
 import fs from 'node:fs'
-import { addEventListener, createBottomBar, getConfiguration, registerCommand } from '@vscode-use/utils'
+import { addEventListener, createBottomBar, createCompletionItem, getConfiguration, registerCommand, registerCompletionItemProvider } from '@vscode-use/utils'
 import * as vscode from 'vscode'
 import { rules, transform } from './transform'
+
+const commonMap = [
+  'flex-center',
+  'pointer',
+  'pointer-none',
+  'dashed',
+  'dotted',
+  'double',
+  'col',
+  'row',
+  'contain',
+  'cover',
+  'justify-center',
+  'align-center',
+  'eclipse',
+]
 
 export function activate(context: vscode.ExtensionContext) {
   // 只针对当前根目录下有tailwind.config.js | tailwind.config.ts才生效
@@ -85,6 +101,12 @@ export function activate(context: vscode.ExtensionContext) {
     const rootPath = currentFolder.uri.fsPath.replace(/\\/g, '/')
     isTailwind = fs.existsSync(`${rootPath}/tailwind.config.js`) || fs.existsSync(`${rootPath}/tailwind.config.ts`)
   }
+  // 如果是tailwind环境下,给出一些预设提醒
+  context.subscriptions.push(registerCompletionItemProvider(['javascript', 'javascriptreact', 'typescriptreact', 'html', 'vue', 'css'], () => {
+    if (!isTailwind)
+      return []
+    return commonMap.map(common => createCompletionItem(common))
+  }, ['"', '\'', ' ', '.']))
 }
 
 export function deactivate() {
