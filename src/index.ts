@@ -24,12 +24,6 @@ export function activate(context: vscode.ExtensionContext) {
   const { presets = [], prefix = ['ts', 'js', 'vue', 'tsx', 'jsx', 'svelte'] } = getConfiguration('tailwind-magic')
   let isTailwind = false
   const currentFolder = (vscode.workspace.workspaceFolders as any)?.[0]
-  if (currentFolder)
-    updateTailwindStatus()
-  if (presets.length)
-    rules.unshift(...presets)
-  let isOpen = true
-  // 如果在class或者className中才处理成-[]
   const statusBarItem = createBottomBar({
     text: 'tailwind-magic off 😞',
     command: {
@@ -39,9 +33,16 @@ export function activate(context: vscode.ExtensionContext) {
     position: 'left',
     offset: 500,
   })
+  if (currentFolder)
+    updateTailwindStatus()
+  if (presets.length)
+    rules.unshift(...presets)
+  let isOpen = true
+  // 如果在class或者className中才处理成-[]
+
   const activeTextEditorUri = vscode.window.activeTextEditor?.document?.uri?.path
 
-  if (activeTextEditorUri && prefix.includes(activeTextEditorUri.split('.').slice(-1)[0]))
+  if (isTailwind && activeTextEditorUri && prefix.includes(activeTextEditorUri.split('.').slice(-1)[0]))
     statusBarItem.show()
 
   registerCommand('tailwindmagic.changeStatus', () => {
@@ -100,6 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
   function updateTailwindStatus() {
     const rootPath = currentFolder.uri.fsPath.replace(/\\/g, '/')
     isTailwind = fs.existsSync(`${rootPath}/tailwind.config.js`) || fs.existsSync(`${rootPath}/tailwind.config.ts`)
+    if (isTailwind)
+      statusBarItem.show()
+    else
+      statusBarItem.hide()
   }
   // 如果是tailwind环境下,给出一些预设提醒
   context.subscriptions.push(registerCompletionItemProvider(['javascript', 'javascriptreact', 'typescriptreact', 'html', 'vue', 'css'], () => {
