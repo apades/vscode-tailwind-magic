@@ -76,14 +76,50 @@ export const rules: any = [
   [/([\s])line([0-9]+)/, (_: string, v = '', v1: string) => `${v}line-clamp-${v1}`],
 ]
 
-export function transform(content: string) {
-  return rules.reduce((result: string, cur: [string | RegExp, string]) => {
-    const [reg, callback] = cur
-    return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string) => {
-      const v = ` ${value}`
-      const newClass = v.replace(reg, callback).slice(1)
-      return `class${name}="${newClass}"`
-    },
-    )
-  }, content)
+interface LineNode {
+  hasClass: boolean
+  content: string
+  line: number
+}
+export function transform(content: string, position: { line: number; offset: number }) {
+  let newInClassPos = position.offset
+  let addOffset = 0
+  const textLineNodes: LineNode[] = content.split('\n').map((content, line) => {
+    return { content, line, hasClass: !!content.match(/class(Name)?="([^"]*)"/) }
+  })
+
+  textLineNodes.forEach((tn) => {
+    if (!tn.hasClass)
+      return
+
+    tn.content = rules.reduce((result: string, cur: [string | RegExp, Function]) => {
+      const [reg, callback] = cur
+      return result.replace(/class(Name)?="([^"]*)"/g, (_: string, name = '', value: string, ...classArgs) => {
+        const v = ` ${value}`
+        const newClass = v.replace(reg, (...args) => {
+          const newStr = callback(...args)
+          if (tn.line === position.line) {
+            const inClassOffset = args[args.length - 2] as number
+            const preLen = `class${name}="`.length
+            const left = preLen + inClassOffset + classArgs[0] - 1
+            const right = left + args[0].length
+            // 在左边的跳过
+            // 在右边的加上替换增长的字数
+            if (newInClassPos > right) {
+              const add = (newStr.length - args[0].length)
+              addOffset += add
+            }
+            // 在中间的单独处理
+            else if (newInClassPos > left && newInClassPos <= right) {
+              newInClassPos = right + (newStr.length - args[0].length)
+            }
+          }
+          return newStr
+        }).slice(1)
+        return `class${name}="${newClass}"`
+      },
+      )
+    }, tn.content)
+  })
+  return { newContent: textLineNodes.map(t => t.content).join('\n'), newInClassPos: newInClassPos + addOffset }
 }

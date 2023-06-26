@@ -42,21 +42,19 @@ export function activate(context: vscode.ExtensionContext) {
     // 对文档保存后的内容进行处理
     const text = e.getText()
 
-    const newText = transform(text)
-    if (newText === text)
+    const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
+    const position = beforeActivePosition.character
+    const { newContent, newInClassPos } = transform(text, { line: beforeActivePosition.line, offset: position })
+    if (newContent === text)
       return
     // activeTextEditor.selection = new vscode.Selection(beforeActivePosition, beforeActivePosition)
-    fs.promises.writeFile(url, newText, 'utf-8').then(() => {
-      const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
+    fs.promises.writeFile(url, newContent, 'utf-8').then(() => {
       const classMatch = lineText.match(/((class)|(className))="[^"]*"/)
       if (!classMatch)
         return
-
-      const index = classMatch.index ?? 0
-      const offset = classMatch[0].length + index
       const newCursorPosition = new vscode.Position(
         beforeActivePosition.line,
-        offset,
+        newInClassPos,
       )
       setTimeout(() => {
         activeTextEditor.selection = new vscode.Selection(newCursorPosition, newCursorPosition)
