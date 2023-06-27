@@ -64,16 +64,11 @@ export function activate(context: vscode.ExtensionContext) {
       return
     // activeTextEditor.selection = new vscode.Selection(beforeActivePosition, beforeActivePosition)
     fs.promises.writeFile(url, newText, 'utf-8').then(() => {
-      const lineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
-      const classMatch = lineText.match(/((class)|(className))="[^"]*"/)
-      if (!classMatch)
-        return
-
-      const index = classMatch.index ?? 0
-      const offset = classMatch[0].length + index
+      const beforeLineText = activeTextEditor.document.lineAt(beforeActivePosition.line).text
+      const currentLineText = newText.split('\n')[beforeActivePosition.line]
       const newCursorPosition = new vscode.Position(
         beforeActivePosition.line,
-        offset,
+        beforeActivePosition.character + currentLineText.length - beforeLineText.length,
       )
       setTimeout(() => {
         activeTextEditor.selection = new vscode.Selection(newCursorPosition, newCursorPosition)
